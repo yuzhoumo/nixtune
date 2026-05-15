@@ -1,8 +1,13 @@
 # nixtune
 
-NixOS module for [Himmelblau](https://github.com/himmelblau-idm/himmelblau) Entra ID / Intune enrollment in **user-mapping mode**, targeting Microsoft internal (MSIT) Intune policies.
+NixOS module for Entra ID / Intune enrollment using
+[himmelblau](https://github.com/himmelblau-idm/himmelblau) in
+**user-mapping mode**, targeting Microsoft internal (MSIT) Intune policies.
 
-This module configures himmelblau for the `register` join type, where a local user is mapped to an Entra ID identity rather than using Entra ID as the primary login. It includes patches for upstream bugs not yet merged, compliance workarounds for MSIT conditional access on NixOS, and first-class WSL2 support.
+This module configures himmelblau for the `register` join type, where a local
+user is mapped to an Entra ID identity rather than using Entra ID as the
+primary login. It includes patches for upstream bugs not yet merged, compliance
+fixes for MSIT conditional access on NixOS, and first-class WSL2 support.
 
 ## Usage
 
@@ -25,8 +30,8 @@ Add this flake as an input and import the module:
         nixtune.nixosModules.default
         {
           modules.himmelblau = {
-            localUser = "joemo";
-            entraUser = "joemo@microsoft.com";
+            localUser = "username";
+            entraUser = "username@microsoft.com";
             wsl = true; # set to false for bare-metal / VM hosts
           };
         }
@@ -38,11 +43,11 @@ Add this flake as an input and import the module:
 
 ## Options
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `modules.himmelblau.localUser` | string | — | Local username to map to the Entra ID identity |
-| `modules.himmelblau.entraUser` | string | — | Entra ID UPN (email) to map the local user to |
-| `modules.himmelblau.wsl` | bool | `false` | Enable WSL2-specific fixups (IPv6, FIDO passthrough, crypttab stub) |
+| Option                         | Type   | Default | Description                                                         |
+|--------------------------------|--------|---------|---------------------------------------------------------------------|
+| `modules.himmelblau.localUser` | string | N/A     | Local username to map to the Entra ID identity                      |
+| `modules.himmelblau.entraUser` | string | N/A     | Entra ID UPN (email) to map the local user to                       |
+| `modules.himmelblau.wsl`       | bool   | `false` | Enable WSL2-specific fixups (IPv6, FIDO passthrough, crypttab stub) |
 
 ## After deploying
 
