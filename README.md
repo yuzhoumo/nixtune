@@ -49,6 +49,12 @@ Add this flake as an input and import the module:
 | `modules.himmelblau.entraUser` | string | N/A     | Entra ID UPN (email) to map the local user to                       |
 | `modules.himmelblau.wsl`       | bool   | `false` | Enable WSL2-specific fixups (IPv6, FIDO passthrough, crypttab stub) |
 
+## WSL2 Setup
+
+For a complete guide to running nixtune on NixOS under WSL2 (including NixOS-WSL
+installation, disk encryption with `wsl --manage`, and FIDO2 key passthrough via
+usbipd) see **[docs/wsl-setup.md](docs/wsl-setup.md)**.
+
 ## After deploying
 
 1. Rebuild: `sudo nixos-rebuild switch --flake .#myhost`
@@ -59,7 +65,7 @@ Add this flake as an input and import the module:
 
 ## Patches included
 
-These fix upstream issues not yet merged:
+These fix upstream issues:
 
 - **kanidm-hsm-crypto**: Strip empty `extensionRequest` attribute from CSRs that Microsoft's Intune API rejects.
 - **libhimmelblau**: PEM-wrap CSRs for Intune enroll API; log response bodies on API errors; fallback manufacturer for WSL/no-DMI systems.
