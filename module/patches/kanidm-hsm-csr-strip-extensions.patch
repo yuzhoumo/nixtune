@@ -1,0 +1,81 @@
+--- a/src/provider/mod.rs	2026-05-14 22:02:47.095271815 -0700
++++ b/src/provider/mod.rs	2026-05-14 22:05:12.652908838 -0700
+@@ -419,18 +419,72 @@
+ 
+         let signing_key = self.rs256_keypair(&rs256_key)?;
+ 
+-        let mut req_builder = CertificateRequestBuilder::new(subject, &signing_key)
++        // Build CSR, then strip the empty extensionRequest attribute that
++        // x509-cert 0.2 inserts. Microsoft's Intune API rejects it.
++        let mut req_builder = CertificateRequestBuilder::new(subject.clone(), &signing_key)
+             .map_err(|_| TpmError::X509RequestBuilder)?;
+ 
+         let csr_to_sign = req_builder
+             .finalize()
+             .map_err(|_| TpmError::X509RequestSign)?;
+ 
+-        let signature = self.rs256_sign_to_bitstring(&rs256_key, &csr_to_sign)?;
+-
+-        let cert_sign_req = req_builder
+-            .assemble(signature)
+-            .map_err(|_| TpmError::X509RequestAssemble)?;
++        // Strip empty extensionRequest from TBS DER by walking the
++        // SEQUENCE body and replacing the [0] IMPLICIT attributes field.
++        let clean_tbs = {
++            use crypto_glue::der::{Reader, SliceReader, Header};
++            let mut reader = SliceReader::new(&csr_to_sign)
++                .map_err(|_| TpmError::X509RequestSign)?;
++            let seq_hdr = Header::decode(&mut reader)
++                .map_err(|_| TpmError::X509RequestSign)?;
++            let body_len = usize::try_from(seq_hdr.length).unwrap();
++            let body_start = csr_to_sign.len() - body_len;
++            let body = &csr_to_sign[body_start..];
++            let mut pos = 0usize;
++            let mut attr_pos = None;
++            while pos < body.len() {
++                if body[pos] == 0xA0 {
++                    attr_pos = Some(pos);
++                    break;
++                }
++                let mut r = SliceReader::new(&body[pos..])
++                    .map_err(|_| TpmError::X509RequestSign)?;
++                let h = Header::decode(&mut r)
++                    .map_err(|_| TpmError::X509RequestSign)?;
++                let hdr_len = body[pos..].len() - usize::try_from(r.remaining_len()).unwrap();
++                pos += hdr_len + usize::try_from(h.length).unwrap();
++            }
++            let attr_offset = attr_pos.ok_or(TpmError::X509RequestSign)?;
++            let mut new_body = body[..attr_offset].to_vec();
++            new_body.extend_from_slice(&[0xA0, 0x00]);
++            let mut result = Vec::new();
++            result.push(0x30); // SEQUENCE tag (raw byte, not DER-encoded integer)
++            crypto_glue::der::Length::new(new_body.len() as u16)
++                .encode(&mut result).map_err(|_| TpmError::X509RequestSign)?;
++            result.extend_from_slice(&new_body);
++            result
++        };
++
++        let signature = self.rs256_sign_to_bitstring(&rs256_key, &clean_tbs)?;
++
++        // Reconstruct CertificateRequest from clean TBS + sig
++        let cert_sign_req = {
++            use crypto_glue::der::{Decode, Encode};
++            let mut csr_der = Vec::new();
++            let alg_der: &[u8] = &[0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86,
++                0xF7, 0x0D, 0x01, 0x01, 0x0B, 0x05, 0x00];
++            let sig_der = signature.to_der()
++                .map_err(|_| TpmError::X509RequestAssemble)?;
++            let inner_len = clean_tbs.len() + alg_der.len() + sig_der.len();
++            csr_der.push(0x30); // SEQUENCE tag (raw byte, not DER-encoded integer)
++            crypto_glue::der::Length::new(inner_len as u16)
++                .encode(&mut csr_der)
++                .map_err(|_| TpmError::X509RequestAssemble)?;
++            csr_der.extend_from_slice(&clean_tbs);
++            csr_der.extend_from_slice(alg_der);
++            csr_der.extend_from_slice(&sig_der);
++            CertificateRequest::from_der(&csr_der)
++                .map_err(|_| TpmError::X509RequestAssemble)?
++        };
+ 
+         let in_progress_enrolment = MsInProgressEnrolment { loadable_rs256_key };
+ 

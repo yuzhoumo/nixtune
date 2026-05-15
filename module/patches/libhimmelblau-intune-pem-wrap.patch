@@ -1,0 +1,14 @@
+--- a/src/intune.rs
++++ b/src/intune.rs
+@@ -519,7 +519,11 @@
+ 
++        let csr_pem = format!(
++            "-----BEGIN CERTIFICATE REQUEST-----\n{}\n-----END CERTIFICATE REQUEST-----",
++            STANDARD.encode(&csr_der)
++        );
+         let payload = json!({
+-            "CertificateSigningRequest": STANDARD.encode(csr_der),
++            "CertificateSigningRequest": csr_pem,
+             "AppVersion": &self.app_vers,
+             "DeviceName": &attrs.device_display_name,
+         });

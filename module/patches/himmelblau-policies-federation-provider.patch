@@ -1,0 +1,19 @@
+--- a/src/policies.rs	2026-01-01 00:00:00.000000000 +0000
++++ b/src/policies.rs	2026-01-01 00:00:00.000000001 +0000
+@@ -52,10 +52,13 @@
+ 
+     let ip_versions = config.get_ip_versions();
+     let request_timeout = config.get_request_timeout();
++    let authority_host = config.get_authority_host(domain);
++    let tenant_id = config.get_tenant_id(domain);
++    let graph_url = config.get_graph_url(domain);
+     let graph = Graph::new(
+         &config.get_odc_provider(domain),
+         domain,
+-        None,
+-        None,
+-        None,
++        Some(&authority_host),
++        tenant_id.as_deref(),
++        graph_url.as_deref(),
+         Duration::from_secs(request_timeout),

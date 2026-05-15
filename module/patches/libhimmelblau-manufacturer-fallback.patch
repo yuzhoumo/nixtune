@@ -1,0 +1,18 @@
+WSL has no /sys/class/dmi/id/sys_vendor, so get_manufacturer() returns
+None. The Intune details() API requires a non-empty Manufacturer field,
+rejecting requests with 400 Bad Request otherwise.
+
+Provide "Microsoft Corporation" as the fallback since the device runs on
+a Microsoft hypervisor.
+
+--- a/src/discovery.rs
++++ b/src/discovery.rs
+@@ -350,7 +350,7 @@
+             os_version: os_version_int,
+             target_domain,
+             os_distribution,
+-            manufacturer: get_manufacturer().unwrap_or_default(),
++            manufacturer: get_manufacturer().unwrap_or_else(|| "Microsoft Corporation".to_string()),
+         })
+     }
+ }
