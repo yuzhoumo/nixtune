@@ -22,7 +22,7 @@ let
 in
 {
   imports = [
-    ./packages.nix
+    ./patch.nix
     ./compliance.nix
     ./wsl.nix
   ];

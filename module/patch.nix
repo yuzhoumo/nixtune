@@ -38,8 +38,6 @@ let
         postPatch = ''
           patch -p1 < ${./patches/libhimmelblau-intune-pem-wrap.patch}
           patch -p1 < ${./patches/libhimmelblau-manufacturer-fallback.patch}
-          # Log response body on Intune API errors (identical pattern in 4 places)
-          sed -i 's|Err(MsalError::GeneralFailure(format!("{}", resp.status())))|{ let _st = resp.status(); let _bd = resp.text().await.unwrap_or_default(); tracing::error!("Intune API error: {} - {}", _st, _bd); Err(MsalError::GeneralFailure(format!("{}: {}", _st, _bd))) }|g' src/intune.rs
         '';
       };
       "himmelblau_policies" = attrs: {
