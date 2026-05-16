@@ -79,13 +79,15 @@ in
     system.nssDatabases.group = lib.mkForce [ "files" "[success=merge]" "systemd" ];
     system.nssDatabases.shadow = lib.mkForce [ "files" ];
 
-    # Disable auth/account (would hang). Add try_unseal after pam_unix so
-    # Entra secrets are automatically unlocked on local login.
+    # Disable auth/account/session (would hang waiting for himmelblaud).
+    # Add try_unseal after pam_unix so Entra secrets are automatically
+    # unlocked on local login.
     security.pam.services = let
       himmelblauPamLib = "${config.services.himmelblau.pamPackage.lib}/lib/libpam_himmelblau.so";
       overrides = svc: {
         rules.auth.himmelblau.enable = false;
         rules.account.himmelblau.enable = false;
+        rules.session.himmelblau.enable = false;
         rules.auth.himmelblau-unseal = {
           order = config.security.pam.services.${svc}.rules.auth.unix.order + 1000;
           control = "optional";

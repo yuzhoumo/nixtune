@@ -18,6 +18,11 @@
 #   apply_intune_policy passes None for authority_host / tenant_id / graph_url
 #   when constructing the Graph client, causing "federation provider not set"
 #   errors. The patch reads them from the config.
+#
+# aad-tool:
+#   auth-test --name calls map_name_to_upn() which short-circuits for local
+#   users (in /etc/passwd), never consulting the user_map_file. The patch
+#   checks the user map first, matching what the PAM module does.
 
 let
   system = pkgs.stdenv.hostPlatform.system;
@@ -45,7 +50,19 @@ let
     };
   });
 
-  patchedHimmelblau = import "${himmelblau}" {
+  # Patch the himmelblau source tree before importing it, so the
+  # aad-tool fix is baked into the source that crate2nix builds.
+  # This avoids fighting with the upstream default.nix's own
+  # defaultCrateOverrides // { aad-tool = ...; } which clobbers
+  # any overlay we set for crates it also overrides.
+  patchedHimmelblauSrc = pkgs.runCommand "himmelblau-patched-src" {} ''
+    cp -r ${himmelblau} $out
+    chmod -R u+w $out
+    cd $out/src/cli
+    patch -p1 < ${./patches/aad-tool-auth-test-user-map.patch}
+  '';
+
+  patchedHimmelblau = import patchedHimmelblauSrc {
     inherit system;
     pkgs = patchedPkgs;
   };

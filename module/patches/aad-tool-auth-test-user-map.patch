@@ -1,0 +1,26 @@
+--- a/src/main.rs	2026-05-15 16:35:14.701211996 -0700
++++ b/src/main.rs	2026-05-15 16:35:39.652742276 -0700
+@@ -54,6 +54,7 @@
+ use himmelblau_unix_common::tpm_init;
+ use himmelblau_unix_common::unix_config::HsmType;
+ use himmelblau_unix_common::unix_proto::{ClientRequest, ClientResponse};
++use himmelblau_unix_common::user_map::UserMap;
+ use himmelblau_unix_common::{tpm_loadable_machine_key, tpm_machine_key};
+ use kanidm_hsm_crypto::glue::traits::EncodeDer;
+ use kanidm_hsm_crypto::glue::{
+@@ -1606,8 +1607,13 @@
+                 }
+             };
+ 
+-            // Map the name
+-            let account_id = cfg.map_name_to_upn(&account_id);
++            // Map the name: check user_map_file first (handles local users
++            // in user-mapping mode), then fall back to map_name_to_upn.
++            let user_map = UserMap::new(&cfg.get_user_map_file());
++            let account_id = match user_map.get_upn_from_local(&account_id) {
++                Some(upn) => upn,
++                None => cfg.map_name_to_upn(&account_id),
++            };
+ 
+             let opts = Options {
+                 force_reauth,
