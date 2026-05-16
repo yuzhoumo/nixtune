@@ -105,5 +105,15 @@ in
     # Enable lingering so systemd --user starts at boot (needed for
     # himmelblau-broker D-Bus service and linux-entra-sso)
     users.users.${cfg.localUser}.linger = true;
+
+    # udev rules for FIDO2/YubiKey: allow non-root users to access HID devices.
+    # Matches any YubiKey (vendor 1050) and any FIDO HID device (usage page F1D0)
+    services.udev.enable = true;
+    services.udev.extraRules = ''
+      KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1050", MODE="0660", GROUP="users"
+    '';
+
+    # Also pull in the community FIDO2 udev rules for broad device support
+    services.udev.packages = [ pkgs.libfido2 ];
   };
 }

@@ -121,7 +121,7 @@ The output should show `encrypted: true`.
 
 ---
 
-## 4. USB/IP — FIDO key passthrough with usbipd-win
+## 4. USB/IP: FIDO key passthrough with usbipd-win
 
 WSL2 does not have native USB access. The
 [usbipd-win](https://github.com/dorssel/usbipd-win) project bridges USB
