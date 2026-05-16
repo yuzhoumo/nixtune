@@ -6,8 +6,8 @@ NixOS module for Entra ID / Intune enrollment using
 
 This module configures himmelblau for the `register` join type, where a local
 user is mapped to an Entra ID identity rather than using Entra ID as the
-primary login. It includes patches for upstream bugs not yet merged, compliance
-fixes for MSIT conditional access on NixOS, and first-class WSL2 support.
+primary login. It includes patches for upstream bugs, compliance fixes for
+MSIT conditional access on NixOS, and first-class WSL2 support.
 
 ## Usage
 
@@ -69,4 +69,5 @@ These fix upstream issues:
 
 - **kanidm-hsm-crypto**: Strip empty `extensionRequest` attribute from CSRs that Microsoft's Intune API rejects.
 - **libhimmelblau**: PEM-wrap CSRs for Intune enroll API; log response bodies on API errors; fallback manufacturer for WSL/no-DMI systems.
+- **aad-tool**: Resolve local usernames via `user_map_file` in `auth-test`, so user-mapping mode works without a domain suffix.
 - **himmelblau_policies**: Read `authority_host` / `tenant_id` / `graph_url` from config instead of passing `None`.
