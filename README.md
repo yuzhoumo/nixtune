@@ -20,7 +20,7 @@ MSIT conditional access on NixOS, and first-class WSL2 support.
 
 ## Usage
 
-```
+```nix
 # flake.nix
 {
   inputs = {
