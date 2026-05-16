@@ -13,7 +13,7 @@
     nixosModules = rec {
       default = himmelblau-entra;
       himmelblau-entra = {
-        imports = [ ./module ];
+        imports = [ ./module himmelblau.nixosModules.himmelblau ];
         _module.args.himmelblau = himmelblau;
       };
     };

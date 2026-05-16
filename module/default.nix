@@ -22,7 +22,6 @@ let
 in
 {
   imports = [
-    himmelblau.nixosModules.himmelblau
     ./packages.nix
     ./compliance.nix
     ./wsl.nix
