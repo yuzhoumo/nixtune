@@ -51,8 +51,7 @@ named `NixOS` and your local username is `myuser`:
         nixtune.nixosModules.default
         {
           wsl.enable = true;
-          networking.hostName = "wsl";
-          system.stateVersion = "24.11";
+          networking.hostName = "myhost";
 
           # Create your local user
           users.users.myuser = {

@@ -11,8 +11,8 @@ MSIT conditional access on NixOS, and first-class WSL2 support.
 
 ## Options
 
-| Option                         | Type   | Default | Description                                                         |
-|--------------------------------|--------|---------|---------------------------------------------------------------------|
+| Option                      | Type   | Default | Description                                                         |
+|-----------------------------|--------|---------|---------------------------------------------------------------------|
 | `modules.nixtune.localUser` | string | N/A     | Local username to map to the Entra ID identity                      |
 | `modules.nixtune.entraUser` | string | N/A     | Entra ID UPN (email) to map the local user to                       |
 | `modules.nixtune.wsl`       | bool   | `false` | Enable WSL2-specific fixups (IPv6, FIDO passthrough, crypttab stub) |
@@ -34,14 +34,10 @@ MSIT conditional access on NixOS, and first-class WSL2 support.
 
   outputs = { nixpkgs, nixtune, ... }: {
     nixosConfigurations.wsl = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
       modules = [
-        nixos-wsl.nixosModules.default
         nixtune.nixosModules.default
         {
-          wsl.enable = true;
-          networking.hostName = "wsl";
-          system.stateVersion = "24.11";
+          networking.hostName = "myhost";
 
           # Create your local user
           users.users.myuser = {
