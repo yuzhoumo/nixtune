@@ -15,10 +15,6 @@ lib.mkIf config.modules.nixtune.wsl (let
   cfg = config.modules.nixtune;
   user = cfg.localUser;
 in {
-  # Set the default WSL user and enable Windows interop
-  wsl.defaultUser = user;
-  wsl.interop.register = true;
-
   # WSL's systemd-logind doesn't honor linger files, so the user
   # manager (and therefore user D-Bus) won't auto-start. Force it.
   # Restart on failure works around a WSL2 race condition where the
