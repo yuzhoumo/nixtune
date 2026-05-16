@@ -11,8 +11,8 @@
 
   outputs = { self, nixpkgs, himmelblau, ... }: {
     nixosModules = rec {
-      default = himmelblau-entra;
-      himmelblau-entra = {
+      default = nixtune;
+      nixtune = {
         imports = [ ./module himmelblau.nixosModules.himmelblau ];
         _module.args.himmelblau = himmelblau;
       };

@@ -18,7 +18,7 @@
 #   3. Verify:  check https://portal.manage-beta.microsoft.com/devices
 
 let
-  cfg = config.modules.himmelblau;
+  cfg = config.modules.nixtune;
 in
 {
   imports = [
@@ -27,7 +27,7 @@ in
     ./wsl.nix
   ];
 
-  options.modules.himmelblau = {
+  options.modules.nixtune = {
     localUser = lib.mkOption {
       type = lib.types.str;
       description = "Local username to map to the Entra ID identity.";

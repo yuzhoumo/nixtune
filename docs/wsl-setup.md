@@ -60,8 +60,8 @@ named `NixOS` and your local username is `myuser`:
             extraGroups = [ "wheel" ];
           };
 
-          # nixtune / himmelblau config
-          modules.himmelblau = {
+          # nixtune config
+          modules.nixtune = {
             localUser = "myuser";
             entraUser = "myuser@microsoft.com";
             wsl = true;

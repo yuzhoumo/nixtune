@@ -9,23 +9,61 @@ user is mapped to an Entra ID identity rather than using Entra ID as the
 primary login. It includes patches for upstream bugs, compliance fixes for
 MSIT conditional access on NixOS, and first-class WSL2 support.
 
-## Usage
-
-Add this flake to your NixOS host, configure the options below, and rebuild.
-Run the enrollment command after plugging in your Yubikey. Please refer to the
-setup guides for examples and more detailed instructions.
-
-Enroll: `sudo aad-tool auth-test --name <entraUser>`
-  - Set the Hello PIN to the **same password** as your local user.
-  - Authenticate with your FIDO2 key when prompted.
-
 ## Options
 
 | Option                         | Type   | Default | Description                                                         |
 |--------------------------------|--------|---------|---------------------------------------------------------------------|
-| `modules.himmelblau.localUser` | string | N/A     | Local username to map to the Entra ID identity                      |
-| `modules.himmelblau.entraUser` | string | N/A     | Entra ID UPN (email) to map the local user to                       |
-| `modules.himmelblau.wsl`       | bool   | `false` | Enable WSL2-specific fixups (IPv6, FIDO passthrough, crypttab stub) |
+| `modules.nixtune.localUser` | string | N/A     | Local username to map to the Entra ID identity                      |
+| `modules.nixtune.entraUser` | string | N/A     | Entra ID UPN (email) to map the local user to                       |
+| `modules.nixtune.wsl`       | bool   | `false` | Enable WSL2-specific fixups (IPv6, FIDO passthrough, crypttab stub) |
+
+
+## Usage
+
+```
+# flake.nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    nixtune = {
+      url = "github:yuzhoumo/nixtune";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  outputs = { nixpkgs, nixtune, ... }: {
+    nixosConfigurations.wsl = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        nixos-wsl.nixosModules.default
+        nixtune.nixosModules.default
+        {
+          wsl.enable = true;
+          networking.hostName = "wsl";
+          system.stateVersion = "24.11";
+
+          # Create your local user
+          users.users.myuser = {
+            isNormalUser = true;
+            extraGroups = [ "wheel" ];
+          };
+
+          # nixtune config
+          modules.nixtune = {
+            localUser = "myuser";
+            entraUser = "myuser@microsoft.com";
+          };
+        }
+      ];
+    };
+  };
+}
+```
+
+Enroll: `sudo aad-tool auth-test --name <entraUser>`
+  - Set the Hello PIN to the **same password** as your local user.
+  - Authenticate with your FIDO2 key when prompted.
 
 ## Setup Guides
 

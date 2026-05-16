@@ -11,8 +11,8 @@
 #                      `wsl --manage encrypt` on the Windows host or sytem-wide
 #                      Bitlocker encryption to remain in good faith compliance.
 
-lib.mkIf config.modules.himmelblau.wsl (let
-  cfg = config.modules.himmelblau;
+lib.mkIf config.modules.nixtune.wsl (let
+  cfg = config.modules.nixtune;
   user = cfg.localUser;
 in {
   # Set the default WSL user and enable Windows interop

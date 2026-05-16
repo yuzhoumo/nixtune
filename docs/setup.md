@@ -66,8 +66,8 @@ Create a flake that imports nixtune. Replace `myhost` with your hostname and
             extraGroups = [ "wheel" ];
           };
 
-          # nixtune / himmelblau config
-          modules.himmelblau = {
+          # nixtune config
+          modules.nixtune = {
             localUser = "myuser";
             entraUser = "myuser@microsoft.com";
             wsl = false;  # bare-metal / VM
