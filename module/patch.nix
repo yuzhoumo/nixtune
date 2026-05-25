@@ -1,6 +1,6 @@
 { config, lib, pkgs, himmelblau, ... }:
 
-# Applies bug-fix patches to three crates that are not yet fixed upstream:
+# Applies bug-fix patches to crates that are not fixed upstream:
 #
 # kanidm-hsm-crypto:
 #   x509-cert 0.2's RequestBuilder adds an empty extensionRequest that
@@ -9,8 +9,6 @@
 #
 # libhimmelblau:
 #   - CSR must be PEM-wrapped (not raw base64) for the Intune enroll API.
-#   - Intune API errors only include the status code; patch adds the
-#     response body for diagnostics.
 #   - get_manufacturer() returns "" on systems without DMI (e.g. WSL).
 #     The Intune details() API requires a non-empty Manufacturer field.
 #

@@ -1,15 +1,6 @@
 { config, lib, pkgs, ... }:
 
 # WSL2-specific tweaks for fido passthrough, networking, and compliance.
-#
-# 1. Fido passthrough  Pass through fido key from the host using usbipd.
-# 2. IPv6:             WSL2's IPv6 is broken; disable it system-wide.
-# 3. Disk encryption:  WSL2 does not have access to block devices, so there's
-#                      no way to populate a "real" /etc/crypttab entry with a
-#                      working dm-crypt mapping. We can provide a stub to
-#                      satisfy the compliance check. Please use either
-#                      `wsl --manage encrypt` on the Windows host or sytem-wide
-#                      Bitlocker encryption to remain in good faith compliance.
 
 lib.mkIf config.modules.nixtune.wsl (let
   cfg = config.modules.nixtune;
@@ -45,17 +36,4 @@ in {
 
   # USB passthrough for FIDO2/YubiKey (via usbipd-win on the Windows host)
   boot.kernelModules = [ "usbip-core" "vhci-hcd" ];
-
-  # WSL2 cannot create IPv6 sockets; disable at the kernel level so all
-  # applications (not just himmelblau) use IPv4
-  boot.kernel.sysctl."net.ipv6.conf.all.disable_ipv6" = 1;
-  boot.kernel.sysctl."net.ipv6.conf.default.disable_ipv6" = 1;
-
-  # The compliance checker looks for a non-empty /etc/crypttab. We stub this
-  # here, but please use either `wsl --manage encrypt` on the Windows host or
-  # sytem-wide Bitlocker encryption to remain in good faith compliance.
-  environment.etc."crypttab" = {
-    text = "# WSL2 VHDX encrypted via wsl --manage encrypt (BitLocker VHD encryption)\n";
-    mode = "0644";
-  };
 })
