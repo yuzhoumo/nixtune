@@ -28,6 +28,8 @@ in
   ];
 
   options.modules.nixtune = {
+    enable = lib.mkEnableOption "nixtune Entra ID / Intune enrollment";
+
     localUser = lib.mkOption {
       type = lib.types.str;
       description = "Local username to map to the Entra ID identity.";
@@ -47,7 +49,7 @@ in
     };
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     services.himmelblau = {
       enable = true;
 

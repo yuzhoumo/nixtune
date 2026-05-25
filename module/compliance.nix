@@ -10,7 +10,7 @@
 #                     that policy enforcement needs.
 # 4. Cron:            Enable cron service for Intune script policies.
 
-{
+lib.mkIf config.modules.nixtune.enable {
   # MSIT conditional-access policy requires Ubuntu. We write a fake
   # os-release and bind-mount it into the tasks daemon's mount namespace.
   environment.etc."himmelblau/fake-os-release" = {

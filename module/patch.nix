@@ -63,7 +63,7 @@ let
     pkgs = patchedPkgs;
   };
 in
-{
+lib.mkIf config.modules.nixtune.enable {
   services.himmelblau = {
     daemonPackage = lib.mkForce patchedHimmelblau.packages.daemon;
     pamPackage = lib.mkForce patchedHimmelblau.packages.pam;

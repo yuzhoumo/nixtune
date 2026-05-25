@@ -66,6 +66,7 @@ Create a flake that imports nixtune. Replace `myhost` with your hostname and
 
           # nixtune config
           modules.nixtune = {
+            enable = true;
             localUser = "myuser";
             entraUser = "myuser@microsoft.com";
             wsl = false;  # bare-metal / VM

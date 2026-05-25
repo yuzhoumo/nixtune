@@ -61,6 +61,7 @@ named `NixOS` and your local username is `myuser`:
 
           # nixtune config
           modules.nixtune = {
+            enable = true;
             localUser = "myuser";
             entraUser = "myuser@microsoft.com";
             wsl = true;

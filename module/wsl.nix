@@ -2,7 +2,7 @@
 
 # WSL2-specific tweaks for fido passthrough, networking, and compliance.
 
-lib.mkIf config.modules.nixtune.wsl (let
+lib.mkIf (config.modules.nixtune.enable && config.modules.nixtune.wsl) (let
   cfg = config.modules.nixtune;
   user = cfg.localUser;
 in {
