@@ -16,8 +16,7 @@ MSIT conditional access on NixOS, and first-class WSL2 support.
 | `modules.nixtune.enable`    | bool   | `false` | Whether to enable nixtune Entra ID / Intune enrollment              |
 | `modules.nixtune.localUser` | string | N/A     | Local username to map to the Entra ID identity                      |
 | `modules.nixtune.entraUser` | string | N/A     | Entra ID UPN (email) to map the local user to                       |
-| `modules.nixtune.wsl`       | bool   | `false` | Enable WSL2-specific fixups (IPv6, FIDO passthrough, crypttab stub) |
-
+| `modules.nixtune.wsl`       | bool   | `false` | Enable WSL2-specific fixups (FIDO passthrough, user manager linger) |
 
 ## Usage
 
