@@ -2,7 +2,7 @@
 
 NixOS module for Entra ID / Intune enrollment using
 [himmelblau](https://github.com/himmelblau-idm/himmelblau) in
-**user-mapping mode**, targeting Microsoft internal (MSIT) Intune policies.
+**user-mapping mode**.
 
 This module configures himmelblau for the `register` join type, where a local
 user is mapped to an Entra ID identity rather than using Entra ID as the

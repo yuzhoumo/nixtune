@@ -1,7 +1,5 @@
 { config, lib, pkgs, ... }:
 
-# On NixOS, several things don't match what MSIT expects for compliance:
-#
 # 1. OS identity:     Spoof /etc/os-release to fake Ubuntu.
 # 2. FHS dirs:        NixOS FHS directories are default read-only. We need to
 #                     explicitly specify writeable directories.
@@ -11,8 +9,8 @@
 # 4. Cron:            Enable cron service for Intune script policies.
 
 lib.mkIf config.modules.nixtune.enable {
-  # MSIT conditional-access policy requires Ubuntu. We write a fake
-  # os-release and bind-mount it into the tasks daemon's mount namespace.
+  # Write a fake os-release and bind-mount it into the tasks daemon's mount
+  # namespace to satisfy check for Ubuntu.
   environment.etc."himmelblau/fake-os-release" = {
     text = ''
       PRETTY_NAME="Ubuntu 22.04.4 LTS"

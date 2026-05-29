@@ -157,7 +157,7 @@ usbipd attach --wsl --busid 2-3
 ### Verify inside NixOS
 
 ```bash
-# The device should appear
+# The device should appear (install pkgs.usbutils for lsusb)
 lsusb
 ```
 

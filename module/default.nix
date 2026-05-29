@@ -33,13 +33,13 @@ in
     localUser = lib.mkOption {
       type = lib.types.str;
       description = "Local username to map to the Entra ID identity.";
-      example = "joemo";
+      example = "myuser";
     };
 
     entraUser = lib.mkOption {
       type = lib.types.str;
       description = "Entra ID UPN (email) to map the local user to.";
-      example = "joemo@microsoft.com";
+      example = "myuser@microsoft.com";
     };
 
     wsl = lib.mkOption {
