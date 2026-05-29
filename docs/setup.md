@@ -88,12 +88,6 @@ sudo nixos-rebuild switch --flake .#myhost
 
 ## 3. Disk Encryption (LUKS)
 
-The MSIT Intune compliance policy checks for a non-empty `/etc/crypttab`.
-On bare-metal and VM installations, you should use full-disk encryption with
-LUKS to satisfy this requirement.
-
-### Install NixOS with LUKS from the start
-
 The easiest approach is to set up LUKS during initial NixOS installation. The
 NixOS manual covers this in detail:
 [Full Disk Encryption](https://nixos.wiki/wiki/Full_Disk_Encryption).

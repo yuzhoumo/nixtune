@@ -83,14 +83,9 @@ sudo nixos-rebuild switch --flake .#wsl
 
 ## 3. Disk Encryption
 
-This satisfies the Intune disk-encryption compliance policy.
-
-Technically, this setup will work even if you skip encryption, since the policy
-only checks for a non-empty `/etc/crypttab` file, which we have stubbed in the
-WSL tweaks (because WSL doesn't support native linux encryption).
-
-However, you should still encrypt your drive to remain in good-faith compliance
-with the policy.
+Encrypting the Windows host machine with [BitLocker](https://support.microsoft.com/en-us/windows/bitlocker-drive-encryption-76b92ac9-1040-48d6-9f5f-d14b3c5fa178)
+is the easiest solution, as it avoids the need to enter a passphrase each time
+WSL is launched. However, encrypting the WSL disk is also possible.
 
 ### Encrypting the WSL disk with `wsl --manage`
 
@@ -118,7 +113,7 @@ The output should show `encrypted: true`.
 - The passphrase is separate from your NixOS user password.
 - If you forget the passphrase, the VHDX data is unrecoverable.
 - Alternatively, you can enable system-wide BitLocker on the Windows drive that
-  holds the VHDX. Both approaches satisfy the compliance check.
+  holds the VHDX.
 
 ---
 

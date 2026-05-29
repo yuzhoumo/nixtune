@@ -11,7 +11,7 @@
 # local auth to auto-unseal the Entra broker secrets using the login password.
 #
 # After deploying this configuration:
-#   1. Rebuild: sudo nixos-rebuild switch --flake .#wsl-work
+#   1. Rebuild: sudo nixos-rebuild switch --flake .#<yourHost>
 #   2. Enroll:  sudo aad-tool auth-test --name <entraUser>
 #      - Set the Hello PIN to the SAME password as your local user.
 #      - Authenticate with your FIDO2 key when prompted.
