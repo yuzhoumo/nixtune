@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779397331,
-        "narHash": "sha256-pF/Rcsbrj7purz7gxqZ6qcO3kpuB9cOPi8g1rkCJ9ik=",
+        "lastModified": 1780004137,
+        "narHash": "sha256-X8ho4yMMlfrSMLrXOCH86wwpF/pHArdhnnG75EPbCCA=",
         "owner": "himmelblau-idm",
         "repo": "himmelblau",
-        "rev": "1f848d27f3567008ef23ff5656568e4204b86ca1",
+        "rev": "ffab05f88399e5045313d97369f94238b747d7b7",
         "type": "github"
       },
       "original": {
