@@ -83,12 +83,22 @@ in
     # Disable auth/account/session (would hang waiting for himmelblaud).
     # Add try_unseal after pam_unix so Entra secrets are automatically
     # unlocked on local login.
+    #
+    # try_unseal implies use_first_pass (see pam_himmelblau(8)), so it must
+    # run AFTER pam_unix populates PAM_AUTHTOK. NixOS ships pam_unix as
+    # "sufficient", which short-circuits the auth stack on success and
+    # prevents any subsequent optional modules (including our unseal rule)
+    # from ever running. Rewrite pam_unix's control to [success=ok
+    # default=die] so processing continues past it on success, and disable
+    # pam_deny (the [default=die] action already handles the failure path).
     security.pam.services = let
       himmelblauPamLib = "${config.services.himmelblau.pamPackage.lib}/lib/libpam_himmelblau.so";
       overrides = svc: {
         rules.auth.himmelblau.enable = false;
         rules.account.himmelblau.enable = false;
         rules.session.himmelblau.enable = false;
+        rules.auth.unix.control = lib.mkForce "[success=ok default=die]";
+        rules.auth.deny.enable = lib.mkForce false;
         rules.auth.himmelblau-unseal = {
           order = config.security.pam.services.${svc}.rules.auth.unix.order + 1000;
           control = "optional";
