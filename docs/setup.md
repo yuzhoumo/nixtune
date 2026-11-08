@@ -71,6 +71,9 @@ Create a flake that imports nixtune. Replace `myhost` with your hostname and
             entraUser = "myuser@microsoft.com";
             wsl = false;  # bare-metal / VM
           };
+
+          # Uncomment if work email uses a different domain than "microsoft.com"
+          # services.himmelblau.settings.domain = ["your-work-domain.com"];
         }
       ];
     };
